@@ -45,15 +45,13 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configure CORS
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
+# Configure CORS for local and production deployment
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -74,10 +72,27 @@ app.include_router(chat.router)
 def health_check():
     return {"status": "ok", "platform": "BuildWise AI"}
 
-@app.get("/")
-def root():
-    return {"message": "BuildWise AI - Construction Intelligence Platform API"}
+# Check if frontend production build exists and serve it
+frontend_dist = current_dir.parent / "frontend" / "dist"
+if (frontend_dist / "assets").exists():
+    app.mount("/assets", StaticFiles(directory=str(frontend_dist / "assets")), name="assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        # Don't intercept API routes
+        if full_path.startswith("api/"):
+            return FileResponse(frontend_dist / "index.html")
+        file_path = frontend_dist / full_path
+        if file_path.is_file():
+            return FileResponse(file_path)
+        return FileResponse(frontend_dist / "index.html")
+else:
+    @app.get("/")
+    def root():
+        return {"message": "BuildWise AI - Construction Intelligence Platform API"}
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    port = int(os.getenv("PORT", 8000))
+    host = os.getenv("HOST", "0.0.0.0")
+    uvicorn.run(app, host=host, port=port)
