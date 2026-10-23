@@ -1,20 +1,12 @@
 import sys
-import os
 from pathlib import Path
 
-# Add root and backend to python path for Vercel Serverless execution
+# Add api directory to sys.path
 current_dir = Path(__file__).resolve().parent
-root_dir = current_dir.parent
-backend_dir = root_dir / "backend"
+if str(current_dir) not in sys.path:
+    sys.path.insert(0, str(current_dir))
 
-for path_entry in [str(root_dir), str(backend_dir)]:
-    if path_entry not in sys.path:
-        sys.path.insert(0, path_entry)
+from main import app
 
-try:
-    from backend.main import app
-except ImportError:
-    from main import app
-
-# Expose app for Vercel ASGI serverless handler
+# Vercel ASGI Serverless entrypoint
 app = app

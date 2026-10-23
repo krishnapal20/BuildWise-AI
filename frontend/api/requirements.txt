@@ -1,0 +1,7 @@
+fastapi
+pydantic
+python-multipart
+python-dotenv
+groq
+httpx
+Pillow
