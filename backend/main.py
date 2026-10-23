@@ -78,18 +78,13 @@ for r in api_routers:
 def health_check():
     return {"status": "ok", "platform": "BuildWise AI"}
 
-# Check if frontend production build exists and serve it
-frontend_dist = current_dir.parent / "frontend" / "dist"
-if (frontend_dist / "assets").exists():
+# Check if running locally (not on Vercel) and serve static frontend if build exists
+is_vercel = os.getenv("VERCEL") == "1"
+if not is_vercel and (frontend_dist / "assets").exists():
     app.mount("/assets", StaticFiles(directory=str(frontend_dist / "assets")), name="assets")
 
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
-        # Don't intercept API routes
-        api_prefixes = ("api", "safety", "crack", "planning", "valuation", "assistant", "weather", "knowledge", "chat")
-        if any(full_path.startswith(p) for p in api_prefixes):
-            from fastapi.responses import JSONResponse
-            return JSONResponse(status_code=404, content={"detail": "API endpoint not found"})
         file_path = frontend_dist / full_path
         if file_path.is_file():
             return FileResponse(file_path)
