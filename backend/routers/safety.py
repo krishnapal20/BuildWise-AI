@@ -7,7 +7,7 @@ except ImportError:
     from schemas.safety import SafetyResponse
     from services import groq_client
 
-router = APIRouter(prefix="/api/safety", tags=["Safety"])
+router = APIRouter(prefix="/safety", tags=["Safety"])
 
 @router.post("/analyze", response_model=SafetyResponse)
 async def analyze_safety(

@@ -6,7 +6,7 @@ except ImportError:
     from schemas.valuation import ValuationRequest, ValuationResponse
     from services import groq_client
 
-router = APIRouter(prefix="/api/valuation", tags=["Valuation"])
+router = APIRouter(prefix="/valuation", tags=["Valuation"])
 
 @router.post("/estimate", response_model=ValuationResponse)
 async def estimate_valuation(request: ValuationRequest):

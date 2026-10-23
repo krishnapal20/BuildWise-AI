@@ -6,7 +6,7 @@ except ImportError:
     from schemas.assistant import AssistantRequest, AssistantResponse
     from services import groq_client
 
-router = APIRouter(prefix="/api/assistant", tags=["Site Assistant"])
+router = APIRouter(prefix="/assistant", tags=["Site Assistant"])
 
 @router.post("/daily", response_model=AssistantResponse)
 async def plan_daily_operations(request: AssistantRequest):

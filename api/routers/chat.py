@@ -6,7 +6,7 @@ except ImportError:
     from schemas.chat import ChatRequest, ChatResponse
     from services import groq_client
 
-router = APIRouter(prefix="/api/chat", tags=["Chat Assistant"])
+router = APIRouter(prefix="/chat", tags=["Chat Assistant"])
 
 @router.post("/message", response_model=ChatResponse)
 async def chat_message(request: ChatRequest):

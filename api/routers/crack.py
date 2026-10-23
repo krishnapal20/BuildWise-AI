@@ -7,7 +7,7 @@ except ImportError:
     from schemas.crack import CrackResponse
     from services import groq_client
 
-router = APIRouter(prefix="/api/crack", tags=["Crack Detection"])
+router = APIRouter(prefix="/crack", tags=["Crack Detection"])
 
 @router.post("/detect", response_model=CrackResponse)
 async def detect_cracks(

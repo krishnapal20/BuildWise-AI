@@ -6,7 +6,7 @@ except ImportError:
     from schemas.planning import PlanningRequest, PlanningResponse
     from services import groq_client, image_service
 
-router = APIRouter(prefix="/api/planning", tags=["Project Planning"])
+router = APIRouter(prefix="/planning", tags=["Project Planning"])
 
 @router.post("/generate", response_model=PlanningResponse)
 async def generate_plan(request: PlanningRequest):

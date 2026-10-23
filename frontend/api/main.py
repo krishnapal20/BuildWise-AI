@@ -57,15 +57,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register API Routers
-app.include_router(safety.router)
-app.include_router(crack.router)
-app.include_router(planning.router)
-app.include_router(valuation.router)
-app.include_router(assistant.router)
-app.include_router(weather.router)
-app.include_router(knowledge.router)
-app.include_router(chat.router)
+# Register API Routers with both /api and empty prefix (for Vercel serverless path compatibility)
+api_routers = [
+    safety.router,
+    crack.router,
+    planning.router,
+    valuation.router,
+    assistant.router,
+    weather.router,
+    knowledge.router,
+    chat.router,
+]
+
+for r in api_routers:
+    app.include_router(r, prefix="/api")
+    app.include_router(r, prefix="")
 
 @app.get("/health")
 @app.get("/api/health")
@@ -80,8 +86,10 @@ if (frontend_dist / "assets").exists():
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
         # Don't intercept API routes
-        if full_path.startswith("api/"):
-            return FileResponse(frontend_dist / "index.html")
+        api_prefixes = ("api", "safety", "crack", "planning", "valuation", "assistant", "weather", "knowledge", "chat")
+        if any(full_path.startswith(p) for p in api_prefixes):
+            from fastapi.responses import JSONResponse
+            return JSONResponse(status_code=404, content={"detail": "API endpoint not found"})
         file_path = frontend_dist / full_path
         if file_path.is_file():
             return FileResponse(file_path)

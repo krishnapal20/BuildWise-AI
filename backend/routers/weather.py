@@ -6,7 +6,7 @@ except ImportError:
     from schemas.weather import WeatherRequest, WeatherResponse
     from services import weather_service, groq_client
 
-router = APIRouter(prefix="/api/weather", tags=["Weather Advisory"])
+router = APIRouter(prefix="/weather", tags=["Weather Advisory"])
 
 @router.post("/advisory", response_model=WeatherResponse)
 async def get_weather_advisory(request: WeatherRequest):

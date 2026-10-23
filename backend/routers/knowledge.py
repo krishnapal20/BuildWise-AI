@@ -6,7 +6,7 @@ except ImportError:
     from schemas.knowledge import KnowledgeRequest, KnowledgeResponse
     from services import groq_client
 
-router = APIRouter(prefix="/api/knowledge", tags=["Knowledge Base"])
+router = APIRouter(prefix="/knowledge", tags=["Knowledge Base"])
 
 @router.post("/ask", response_model=KnowledgeResponse)
 async def ask_knowledge_base(request: KnowledgeRequest):
