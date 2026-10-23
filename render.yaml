@@ -1,11 +1,12 @@
 services:
   - type: web
-    name: buildwise-ai
-    env: docker
+    name: buildwise-api
+    env: python
+    region: oregon
     plan: free
-    dockerfilePath: Dockerfile
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: GROQ_API_KEY
         sync: false
-      - key: PORT
-        value: 8000

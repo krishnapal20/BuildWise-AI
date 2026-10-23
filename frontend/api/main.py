@@ -78,7 +78,7 @@ for r in api_routers:
 def health_check():
     return {"status": "ok", "platform": "BuildWise AI"}
 
-# Check if running locally (not on Vercel) and serve static frontend if build exists
+frontend_dist = current_dir.parent / "dist"
 is_vercel = os.getenv("VERCEL") == "1"
 if not is_vercel and (frontend_dist / "assets").exists():
     app.mount("/assets", StaticFiles(directory=str(frontend_dist / "assets")), name="assets")
