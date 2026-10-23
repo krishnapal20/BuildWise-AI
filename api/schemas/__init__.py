@@ -1,1 +1,0 @@
-"""BuildWise AI Schemas package."""
